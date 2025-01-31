@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix Clone API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #e50914;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #e50914;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #b2070e;
+        }
+        #response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Kayıt Ol</h2>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="regUsername">Kullanıcı Adı:</label>
+                <input type="text" id="regUsername" required>
+            </div>
+            <div class="form-group">
+                <label for="regEmail">Email:</label>
+                <input type="email" id="regEmail" required>
+            </div>
+            <div class="form-group">
+                <label for="regPassword">Şifre:</label>
+                <input type="password" id="regPassword" required>
+            </div>
+            <button type="submit">Kayıt Ol</button>
+        </form>
+        <div id="registerResponse"></div>
+    </div>
+
+    <div class="container">
+        <h2>Giriş Yap</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="loginEmail">Email:</label>
+                <input type="email" id="loginEmail" required>
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Şifre:</label>
+                <input type="password" id="loginPassword" required>
+            </div>
+            <button type="submit">Giriş Yap</button>
+        </form>
+        <div id="loginResponse"></div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api/auth';
+
+        // Kayıt olma formu
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const responseDiv = document.getElementById('registerResponse');
+            
+            try {
+                const response = await fetch(`${API_URL}/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: document.getElementById('regUsername').value,
+                        email: document.getElementById('regEmail').value,
+                        password: document.getElementById('regPassword').value
+                    })
+                });
+
+                const data = await response.json();
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+                responseDiv.className = response.ok ? 'success' : 'error';
+            } catch (error) {
+                responseDiv.textContent = 'Bir hata oluştu: ' + error.message;
+                responseDiv.className = 'error';
+            }
+        });
+
+        // Giriş yapma formu
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const responseDiv = document.getElementById('loginResponse');
+            
+            try {
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: document.getElementById('loginEmail').value,
+                        password: document.getElementById('loginPassword').value
+                    })
+                });
+
+                const data = await response.json();
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+                responseDiv.className = response.ok ? 'success' : 'error';
+
+                if (response.ok) {
+                    // Token'ı localStorage'a kaydet
+                    localStorage.setItem('token', data.data.token);
+                }
+            } catch (error) {
+                responseDiv.textContent = 'Bir hata oluştu: ' + error.message;
+                responseDiv.className = 'error';
+            }
+        });
+    </script>
+</body>
+</html> 
