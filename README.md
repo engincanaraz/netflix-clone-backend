@@ -1,8 +1,4 @@
-# 🎬 Netflix Clone Projesi
-
-## 📌 Özet
-Full stack development öğrenme yolculuğumda geliştirdiğim ilk kapsamlı proje. Node.js, Express.js ve PostgreSQL kullanarak Netflix benzeri bir uygulama geliştirdim.
-
+# 🎬 Netflix Clone Projesi Backend
 
 
 ## 🛠 Tech Stack
